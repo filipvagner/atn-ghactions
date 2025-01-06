@@ -1,0 +1,144 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
+  paths:
+    exclude:
+    - README.md
+
+variables:
+- name: curEnv
+  value: prod
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: TerraformPlan
+  displayName: Terraform Plan
+  jobs:
+    - job: TerraformPlan
+      displayName: Terraform Plan
+      steps:
+      - checkout: self
+        displayName: Checkout Self
+      
+      - task: TerraformInstaller@1
+        name: terraformInstall
+        displayName: Install Terraform 1.5.7
+        inputs:
+          terraformVersion: 1.5.7
+      
+      - task: TerraformTaskV4@4
+        name: terraformInit
+        displayName: Initialize Terraform
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          commandOptions: '-upgrade'
+          workingDirectory: 'terraform'
+          backendServiceArm: 'ADO-PipelineLearn-Terraform'
+          backendAzureRmResourceGroupName: 'rg-ADO-PipelineLearn-Terraform'
+          backendAzureRmStorageAccountName: 'stadopltf'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: 'adopltf.tfstate'
+
+      - task: TerraformTaskV4@4
+        name: terraformPlan
+        displayName: Create Terraform Plan
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          commandOptions: '-out=main.tfplan'
+          workingDirectory: 'terraform'
+          environmentServiceNameAzureRM: 'ADO-PipelineLearn-Terraform'
+
+      - task: Bash@3
+        name: curDir
+        displayName: Current Directory
+        inputs:
+          targetType: 'inline'
+          script: 'pwd'
+      
+      - task: PublishPipelineArtifact@1
+        condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+        name: uploadTfPlan
+        displayName: Publish TF Plan as Artifact
+        inputs:
+          targetPath: /home/vsts/work/1/s/terraform/main.tfplan
+          artifactName: TfPlan
+
+      - task: Bash@3
+        name: dirContent
+        displayName: Directory Content
+        inputs:
+          targetType: 'inline'
+          script: 'ls'
+          workingDirectory: 'terraform'
+
+- stage: TerraformApply
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  displayName: Terraform Apply
+  jobs:
+    - deployment: TerraformApply
+      environment: PipelineLearn-Terraform-$(curEnv)
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - checkout: self
+              displayName: Checkout Self
+
+            - task: DownloadPipelineArtifact@2
+              name: downloadTfPlan
+              displayName: Download TF Plan from Artifact
+              inputs:
+                artifact: TfPlan
+                path: terraform
+
+            - task: TerraformInstaller@1
+              name: terraformInstall
+              displayName: Install Terraform 1.5.7
+              inputs:
+                terraformVersion: 1.5.7
+
+            - task: TerraformTaskV4@4
+              name: terraformInit
+              displayName: Initialize Terraform
+              inputs:
+                provider: 'azurerm'
+                command: 'init'
+                commandOptions: '-upgrade'
+                workingDirectory: 'terraform'
+                backendServiceArm: 'ADO-PipelineLearn-Terraform'
+                backendAzureRmResourceGroupName: 'rg-ADO-PipelineLearn-Terraform'
+                backendAzureRmStorageAccountName: 'stadopltf'
+                backendAzureRmContainerName: 'tfstate'
+                backendAzureRmKey: 'adopltf.tfstate'
+
+            - task: Bash@3
+              name: dirContent
+              displayName: Directory Content
+              inputs:
+                targetType: 'inline'
+                script: 'ls'
+                workingDirectory: 'terraform'
+
+            - task: Bash@3
+              name: tfVersion
+              displayName: Terraform Vesrion
+              inputs:
+                targetType: 'inline'
+                script: 'terraform version'
+                workingDirectory: 'terraform'
+
+            - task: TerraformTaskV4@4
+              name: terraformApply
+              displayName: Apply Terraform Configuration
+              inputs:
+                provider: 'azurerm'
+                command: 'apply'
+                workingDirectory: 'terraform'
+                commandOptions: 'main.tfplan'
+                environmentServiceNameAzureRM: 'ADO-PipelineLearn-Terraform'

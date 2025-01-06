@@ -1,0 +1,29 @@
+FROM ubuntu:22.04
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y curl unzip wget apt-transport-https software-properties-common
+
+# Install Terraform
+RUN curl -LO https://releases.hashicorp.com/terraform/1.9.0/terraform_1.9.0_linux_amd64.zip && \
+    unzip terraform_1.9.0_linux_amd64.zip && \
+    mv terraform /usr/local/bin && \
+    rm terraform_1.9.0_linux_amd64.zip
+
+# Install Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+# Download Micrsoft repository key
+RUN wget -q https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
+
+# Install PowerShell
+RUN apt-get update
+RUN apt-get install -y powershell
+
+# System tasks
+RUN mkdir /home/GitHubOnLocal
+RUN chmod -R 777 /home/GitHubOnLocal
+
+
+CMD ["/bin/bash"]

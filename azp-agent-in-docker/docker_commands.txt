@@ -1,0 +1,11 @@
+docker build --tag "azp-agent:1.0" --file "./azp-agent-linux.dockerfile" .
+
+docker tag azp-agent:1.0 atntestregistry.azurecr.io/azp-agent:1.0
+
+docker push atntestregistry.azurecr.io/azp-agent:1.0
+
+To run image on local host
+docker run -e AZP_URL="$AZP_URL" -e AZP_TOKEN="$AZP_TOKEN" -e AZP_POOL="$AZP_POOL" -e AZP_AGENT_NAME="$AZP_AGENT_NAME" --name "azp-agent-linux-1" azp-agent:1.0.0
+
+ENABLE and DISABLE anonymous pull access on ACR
+https://learn.microsoft.com/en-us/azure/container-registry/anonymous-pull-access

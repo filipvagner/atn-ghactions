@@ -1,0 +1,32 @@
+trigger:
+  batch: true
+  branches:
+    include:
+    - '*'
+  paths:
+    exclude:
+    - README.md
+
+variables:
+- name: curEnv
+  value: prod
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: Stage1
+  displayName: Stage 1
+  jobs:
+    - job: Job1
+      displayName: Job 1
+      steps:
+      - checkout: self
+        displayName: Checkout Self
+
+      - task: Bash@3
+        name: curDir
+        displayName: Current Directory
+        inputs:
+          targetType: 'inline'
+          script: 'pwd'
