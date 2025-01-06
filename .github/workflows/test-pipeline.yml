@@ -2,6 +2,14 @@ name: Test Pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment to deploy
+        options: 
+        - Dev
+        - Test
+        - Prod
 
 jobs:
   job1:
@@ -9,6 +17,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Send greeting
+      run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
+
     - name: Checkout repository
       uses: actions/checkout@v4
 
