@@ -46,11 +46,11 @@ jobs:
 
     - name: Terraform Init
       run: |
-        cd infra/terraform
-        export ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}
-        export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}
+        cd infrastructure
+        export ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID_DEV }}
+        export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET_DEV }}
         export ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
-        export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}
+        export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
         terraform init \
         -upgrade \
         -backend-config="resource_group_name=rg-learntfstate-001" \
@@ -60,9 +60,9 @@ jobs:
 
     - name: Terraform Plan
       run: |
-        cd infra/terraform
-        export ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID }}
-        export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET }}
+        cd infrastructure
+        export ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID_DEV }}
+        export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET_DEV }}
         export ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
-        export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID }}
+        export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
         terraform plan -out=tfplan
