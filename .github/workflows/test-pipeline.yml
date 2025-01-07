@@ -17,7 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Send greeting
+    - name: Environment Selection
+      run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
+    
+    - name: Environment Selection
       run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
 
     - name: Checkout repository
@@ -66,7 +69,7 @@ jobs:
         -upgrade \
         -backend-config="resource_group_name=rg-learntfstate-001" \
         -backend-config="storage_account_name=stlearntfstate001" \
-        -backend-config="container_name=gh-atn-dev" \
+        -backend-config="container_name=gh-atn-${{ github.event.inputs.environment }}" \
         -backend-config="key=terraform.tfstate"
 
     - name: Terraform Plan
