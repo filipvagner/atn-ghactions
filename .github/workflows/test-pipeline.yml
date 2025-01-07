@@ -69,7 +69,7 @@ jobs:
         -upgrade \
         -backend-config="resource_group_name=rg-learntfstate-001" \
         -backend-config="storage_account_name=stlearntfstate001" \
-        -backend-config="container_name=gh-atn-${{ github.event.inputs.environment }}" \
+        -backend-config="container_name=gh-atn-dev" \
         -backend-config="key=terraform.tfstate"
 
     - name: Terraform Plan
