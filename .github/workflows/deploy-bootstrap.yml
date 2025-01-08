@@ -41,10 +41,11 @@ jobs:
           export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
           az bicep install
           az bicep version
-          
+
     - name: Bicep Validate
       uses: Azure/cli@v1
       with:
+        azcliversion: latest
         inlineScript: |
           cd bootstrap
           az deployment sub validate \
