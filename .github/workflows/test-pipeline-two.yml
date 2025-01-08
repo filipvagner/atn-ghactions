@@ -1,0 +1,54 @@
+name: Test Pipeline Two
+run-name: Build number ${{ github.run_id }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment to deploy
+        options:
+        - dev
+        - test
+        - prod
+        default: dev
+
+env:
+  BUILD_NUMBER: ${{ github.run_id }}
+
+jobs:
+  setup-job:
+    runs-on: ubuntu-latest
+    outputs:
+      subscriptionid: "none"
+    name: 'Bicep validate and plan'
+  
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set test variable
+      id: set-variable
+      run: |
+        if [ ${{ github.event.inputs.environment }} == 'dev' ]; then
+          echo "Environment set to dev"
+          echo "::set-output name=subscriptionid::${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}"
+        if [ ${{ github.event.inputs.environment }} == 'test' ]; then
+          echo "Environment set to test"
+          echo "::set-output name=subscriptionid::${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}"
+        if [ ${{ github.event.inputs.environment }} == 'prod' ]; then
+          echo "Environment set to prod"
+          echo "::set-output name=subscriptionid::${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}"
+      shell: bash
+    - name: Read exported variable
+      run: |
+        echo "OUTPUT: ${{ steps.set-variable.test-env.test }}"
+
+  subsequent-job:
+      runs-on: ubuntu-latest
+      needs: [setup-job]
+      steps:
+        - uses: actions/checkout@v2
+        - name: Read exported variable
+          run: |
+            echo "OUTPUT: ${{needs.setup-job.outputs.subscriptionid}}"

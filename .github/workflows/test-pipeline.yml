@@ -1,18 +1,16 @@
 name: Test Pipeline
+run-name: Build number ${{ github.run_id }} by @${{ github.actor }}
+
 on:
-  push:
-    branches:
-      - main
-      
   workflow_dispatch:
     inputs:
       environment:
         type: choice
         description: Environment to deploy
         options:
-        - Dev
-        - Test
-        - Prod
+        - dev
+        - test
+        - prod
 
 jobs:
   job1:
