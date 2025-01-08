@@ -1,5 +1,9 @@
 name: Deploy Bootstrap
 on:
+  push:
+    branches:
+      - main
+      
   workflow_dispatch:
     inputs:
       environment:
@@ -33,12 +37,13 @@ jobs:
         inlineScript: |
           az account show
     
-    - name: Bicep Validate
-      uses: Azure/cli@v1
+    - name: Deployment
+      uses: azure/bicep-deploy@v1
       with:
-        inlineScript: |
-          cd bootstrap
-          az deployment sub validate \
-            --name validate-${{ github.run_id }} \
-            --template-file bootstrap_${{ github.event.inputs.environment }}.bicep \
-            --location "westeurope"
+        type: deployment
+        operation: whatIf
+        name: ghworkflow${{ env.BUILD_NUMBER }}
+        location: westeurope
+        scope: subscription
+        subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
+        template-file: ./bootstrap/bootstrap_dev.bicep
