@@ -73,7 +73,7 @@ jobs:
     name: 'Bicep deploy'
     runs-on: ubuntu-latest
     needs: bicep-plan
-    environment: 'orbit-homework'
+    environment: 'approval'
 
     steps:
     - name: Checkout repository
