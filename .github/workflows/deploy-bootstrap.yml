@@ -18,12 +18,29 @@ env:
 
 jobs:
   bicep-plan:
-    name: 'Bicep validate and plan'
     runs-on: ubuntu-latest
-
+    outputs:
+      envvar: ${{ github.event.inputs.environment }}
+    name: 'Bicep validate and plan'
+  
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Set test variable
+      id: set-variable
+      run: |
+        if [ ${{ github.event.inputs.environment }} == 'dev' ]; then
+          echo "Environment set to dev"
+          echo "::set-output name=test::abc"
+        else
+          echo "IS main branch"
+          echo "::set-output name=test::123"
+        fi
+      shell: bash
+    - name: Read exported variable
+      run: |
+        echo "OUTPUT: ${{ steps.check.test-env.test }}"
 
     - name: Azure Login
       uses: azure/login@v2
