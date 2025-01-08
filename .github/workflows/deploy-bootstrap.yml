@@ -48,7 +48,9 @@ jobs:
         azcliversion: latest
         inlineScript: |
           cd bootstrap
-          az deployment sub validate \
+          az deployment sub create \
             --name validate-${{ github.run_id }} \
             --template-file bootstrap_${{ github.event.inputs.environment }}.bicep \
-            --location westeurope
+            --location westeurope \
+            --mode Incremental \
+            --what-if
