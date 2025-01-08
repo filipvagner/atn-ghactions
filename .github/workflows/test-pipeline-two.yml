@@ -29,15 +29,15 @@ jobs:
       run: |
         if [ ${{ github.event.inputs.environment }} == 'dev' ]; then
           echo "Environment set to dev"
-          echo "::set-output name=subscriptionid::${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}"
+          echo "::set-output name=subscriptionid::thisisdev"
         fi  
         if [ ${{ github.event.inputs.environment }} == 'test' ]; then
           echo "Environment set to test"
-          echo "::set-output name=subscriptionid::${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}"
+          echo "::set-output name=subscriptionid::thisistest"
         fi
         if [ ${{ github.event.inputs.environment }} == 'prod' ]; then
           echo "Environment set to prod"
-          echo "::set-output name=subscriptionid::${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}"
+          echo "::set-output name=subscriptionid::thisisprod"
         fi  
       shell: bash
     - name: Read exported variable
