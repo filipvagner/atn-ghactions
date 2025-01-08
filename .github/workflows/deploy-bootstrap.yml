@@ -13,6 +13,7 @@ on:
         - dev
         - test
         - prod
+        default: dev
 
 jobs:
   bicep:
@@ -41,7 +42,7 @@ jobs:
       with:
         type: deployment
         operation: whatIf
-        name: ghworkflow${{ BUILD_NUMBER }}
+        name: ghworkflow${{ env.BUILD_NUMBER }}
         location: westeurope
         scope: subscription
         subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
