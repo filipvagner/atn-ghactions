@@ -1,5 +1,5 @@
 name: Deploy Bootstrap
-run-name: Deployment to ${{ inputs.deploy_target }} by @${{ github.actor }}
+run-name: Build number ${{ github.run_id }} by @${{ github.actor }}
 
 on:
   workflow_dispatch:
@@ -13,12 +13,13 @@ on:
         - prod
         default: dev
 
+env:
+  BUILD_NUMBER: ${{ github.run_id }}
+
 jobs:
-  bicep:
-    name: 'Bicep Deploy Bootstrap into ${{ github.event.inputs.environment }} environment'
+  bicep-plan:
+    name: 'Bicep validate and plan'
     runs-on: ubuntu-latest
-    env:
-      BUILD_NUMBER: ${{ github.run_id }}
 
     steps:
     - name: Checkout repository
@@ -63,21 +64,41 @@ jobs:
         inlineScript: |
           cd bootstrap
           az deployment sub create \
-            --name validate-${{ github.run_id }} \
+            --name plan-${{ github.run_id }} \
             --template-file bootstrap_${{ github.event.inputs.environment }}.bicep \
             --location westeurope \
             --what-if
-    
-    - name: Approval
-      uses: actions/github-script@v6
+  
+  bicep-deploy:
+    name: 'Bicep deploy'
+    runs-on: ubuntu-latest
+    needs: bicep-plan
+    environment: 'orbit-homework'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v2
       with:
-        script: |
-          github.repos.createDeployment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            ref: context.sha,
-            environment: 'approval'
-          }) 
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure Context
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
+    
+    - name: Bicep Installation
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+          az bicep install
+          az bicep version
 
     - name: Bicep Deploy
       uses: Azure/cli@v1
@@ -86,7 +107,7 @@ jobs:
         inlineScript: |
           cd bootstrap
           az deployment sub create \
-            --name validate-${{ github.run_id }} \
+            --name deploy-${{ github.run_id }} \
             --template-file bootstrap_${{ github.event.inputs.environment }}.bicep \
             --location westeurope \
             --what-if
