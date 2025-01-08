@@ -19,7 +19,7 @@ variable "azp_org_name" {
 variable "azp_token" {
   description = "Personal access token for your Azure DevOps Organziation."
   type        = string
-  default     = "7v5F9TZfzNSeGzUoL41Fce8DU2GOzWmjJvOUynrNlBFHJOGBsF9aJQQJ99BAACAAAAAsbxxFAAASAZDOZFXV"
+  default     = ""
 }
 
 variable "azp_pool" {

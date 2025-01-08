@@ -10,8 +10,7 @@ var varTags = {
 }
 var varStAccounts = [
   {
-    name: 'staicoeinfradevwe001'
-    location: 'westeurope'
+    name: 'statninfradev001'
     skuName: 'Standard_GRS'
     tags: varTags
     containers: [
@@ -30,8 +29,7 @@ var varStAccounts = [
     ]
   }
   {
-    name: 'staicoeappsdevwe001'
-    location: 'westeurope'
+    name: 'statnappsdev001'
     skuName: 'Standard_GRS'
     tags: varTags
     containers: [
