@@ -1,0 +1,48 @@
+name: Deploy Bootstrap
+on:
+  push:
+    branches:
+      - main
+      
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Environment to deploy
+        options:
+        - dev
+        - test
+        - prod
+
+jobs:
+  bicep:
+    name: 'Bicep Deploy Bootstrap into ${{ github.event.inputs.environment }}'
+    runs-on: ubuntu-latest
+    env:
+      BUILD_NUMBER: ${{ github.run_id }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure Subscription
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          az account show
+    
+    - name: Deployment
+      uses: azure/bicep-deploy@v1
+      with:
+        type: deployment
+        operation: whatIf
+        name: 'ghworkflow${BUILD_NUMBER}'
+        location: westeurope
+        scope: subscription
+        subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
+        template-file: ./bootstrap/bootstrap_dev.bicep
