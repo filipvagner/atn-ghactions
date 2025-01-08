@@ -33,6 +33,15 @@ jobs:
         inlineScript: |
           az account show
     
+    - name: Bicep Deloyment
+      uses: azure/cli@v2
+      with:
+        azcliversion: latest
+        inlineScript: |
+          export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+          az bicep install
+          az bicep version
+          
     - name: Bicep Validate
       uses: Azure/cli@v1
       with:
