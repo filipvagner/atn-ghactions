@@ -109,5 +109,4 @@ jobs:
           az deployment sub create \
             --name deploy-${{ github.run_id }} \
             --template-file bootstrap_${{ github.event.inputs.environment }}.bicep \
-            --location westeurope \
-            --what-if
+            --location westeurope
