@@ -19,8 +19,6 @@ env:
 jobs:
   setup-job:
     runs-on: ubuntu-latest
-    outputs:
-      subscriptionid: "none"
   
     steps:
     - name: Checkout repository
@@ -44,7 +42,7 @@ jobs:
       shell: bash
     - name: Read exported variable
       run: |
-        echo "OUTPUT: ${{ steps.set-variable.test-env.test }}"
+        echo "OUTPUT: ${{ steps.set-variable.subscriptionid }}"
 
   subsequent-job:
       runs-on: ubuntu-latest
