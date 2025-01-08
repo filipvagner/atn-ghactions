@@ -55,7 +55,6 @@ jobs:
             --name validate-${{ github.run_id }} \
             --template-file bootstrap_${{ github.event.inputs.environment }}.bicep \
             --location westeurope \
-            --what-if
     
     - name: Bicep Plan
       uses: Azure/cli@v1
