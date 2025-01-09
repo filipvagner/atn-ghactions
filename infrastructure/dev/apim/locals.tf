@@ -1,5 +1,5 @@
 locals {
-  subscription_id = "018805fe-880b-417d-bf6b-6eccfbefac5a" # fva-vse Orbit tenant
+  subscription_id = "638c6283-9805-468e-b517-2e5d8717e23a" # tflearn
 
   global_settings = {
     passthrough    = true
@@ -18,18 +18,6 @@ locals {
   }
 
   role_mapping = {
-    built_in_role_mapping = {
-      keyvaults = {
-        kv_rag = {
-          "Key Vault Secrets User" = {
-            object_ids = {
-              keys = ["41fa029f-be49-48bd-beee-4732c5880743"]
-            }
-          }
-        }
-
-      }
-    }
   }
 
   resource_groups = {

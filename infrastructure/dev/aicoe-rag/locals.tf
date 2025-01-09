@@ -1,5 +1,5 @@
 locals {
-  subscription_id = "018805fe-880b-417d-bf6b-6eccfbefac5a" # fva-vse Orbit tenant
+  subscription_id = "638c6283-9805-468e-b517-2e5d8717e23a" # tflearn
 
   global_settings = {
     passthrough    = true
@@ -12,37 +12,15 @@ locals {
     tags = {
       "WorkloadName" = "AZ LI"
       "Control" : "Terraform",
-      "CreatedBy" : "filip.vagner@orbit.cz",
+      "CreatedBy" : "filip.vagner@hotmail.com",
       "Deployment Information" : "IaC"
     }
   }
 
   role_mapping = {
-    built_in_role_mapping = {
-      keyvaults = {
-        kv_rag = {
-          "Key Vault Secrets User" = {
-            object_ids = {
-              keys = ["41fa029f-be49-48bd-beee-4732c5880743"]
-            }
-          }
-        }
-
-      }
-    }
   }
 
   resource_groups = {
-    rg_network1 = {
-      name = "${module.naming.resource_group.name}-network1"
-      tags = {
-      }
-    }
-    rg_apim = {
-      name = "${module.naming.resource_group.name}-apim"
-      tags = {
-      }
-    }
     rg_rag = {
       name = "${module.naming.resource_group.name}-aicoe-rag"
       tags = {
@@ -96,67 +74,6 @@ locals {
     rg_aiportal_translator = {
       name = "${module.naming.resource_group.name}-aicoe-aiportal-translator"
       tags = {
-      }
-    }
-  }
-
-  networking = {
-    vnets = {
-      vnet1 = {
-        resource_group_key = "rg_network1"
-        vnet = {
-          name          = "${module.naming.virtual_network.name}-network1"
-          address_space = ["10.0.0.0/16"]
-          #dns_servers   = ["10.2.0.5", "10.2.0.6"]
-          # dns_servers_keys = {
-          #   ip1 = {
-          #     lz_key          = "" # must be in a remote deployment, no uncomment
-          #     key             = ""
-          # .   resource_type   = "azurerm_firewall"
-          #     interface_index = 0 #Optional it will take 0.
-          #
-          #   }
-          #   ip2 = {
-          #     lz_key          = "" # must be in a remote deployment, no uncomment
-          #     key             = ""
-          #     resource_type   = "azurerm_firewall"
-          #   }
-          # }
-        }
-        specialsubnets = {}
-        subnets = {
-          snet_apim = {
-            name = "${module.naming.subnet.name}-apim"
-            cidr = ["10.0.0.0/24"]
-          }
-          snet_rag = {
-            name = "${module.naming.subnet.name}-rag"
-            cidr = ["10.0.1.0/24"]
-          }
-          snet_rag_uc04 = {
-            name = "${module.naming.subnet.name}-rag-uc04"
-            cidr = ["10.0.2.0/24"]
-          }
-          snet_rag_uc50 = {
-            name = "${module.naming.subnet.name}-rag-uc50"
-            cidr = ["10.0.3.0/24"]
-          }
-          snet_rag_uc62 = {
-            name = "${module.naming.subnet.name}-rag-uc62"
-            cidr = ["10.0.4.0/24"]
-          }
-          snet_rag_branch = {
-            name = "${module.naming.subnet.name}-rag-branch"
-            cidr = ["10.0.5.0/24"]
-          }
-          snet_manual1 = {
-            name = "${module.naming.subnet.name}-manual1"
-            cidr = ["10.0.6.0/24"]
-            service_endpoints = [
-              "Microsoft.KeyVault",
-            ]
-          }
-        }
       }
     }
   }
