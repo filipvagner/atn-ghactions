@@ -76,6 +76,15 @@ jobs:
         -backend-config="storage_account_name=statninfradev001" \
         -backend-config="container_name=infradev001" \
         -backend-config="key=${{ github.event.inputs.infrapath }}/terraform.tfstate"
+    
+    - name: Terraform Validate
+      run: |
+        cd infrastructure/dev/${{ github.event.inputs.infrapath }}
+        export ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID_DEV }}
+        export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET_DEV }}
+        export ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
+        export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
+        terraform validate
 
     - name: Terraform Plan
       run: |
@@ -84,4 +93,11 @@ jobs:
         export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET_DEV }}
         export ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
         export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
-        terraform plan -out=tfplan
+        terraform plan -out=${{ github.run_id }}-tfplan
+
+    - name: Save Terraform Plan
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan
+        path: |
+          infrastructure/dev/${{ github.event.inputs.infrapath }}/${{ github.run_id }}-tfplan
