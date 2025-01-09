@@ -36,9 +36,11 @@ jobs:
     - name: Run my script
       run: |
         if [ -d "/infrastructure/dev/${{ github.event.inputs.infrapath }}" ]; then
-          echo "Directory exists"
+          echo "Path /infrastructure/dev/${{ github.event.inputs.infrapath }} exists""
         else
-          echo "Directory does not exist"
+          echo "!!! Path /infrastructure/dev/${{ github.event.inputs.infrapath }} does not exist !!!"
+          echo "Please use one of the following subfolders as path:"
+          ls -l infrastructure/dev
           exit 1
         fi
     
