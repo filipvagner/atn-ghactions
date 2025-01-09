@@ -79,7 +79,7 @@ jobs:
 
     - name: Terraform Plan
       run: |
-        cd infrastructure
+        cd infrastructure/dev/${{ github.event.inputs.infrapath }}
         export ARM_CLIENT_ID=${{ secrets.ARM_CLIENT_ID_DEV }}
         export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET_DEV }}
         export ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
