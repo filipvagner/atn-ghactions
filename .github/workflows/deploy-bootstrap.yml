@@ -1,4 +1,4 @@
-name: Deploy Bootstrap
+name: Development - Deploy Bootstrap
 run-name: Build number ${{ github.run_id }} by @${{ github.actor }}
 
 on:
@@ -9,8 +9,6 @@ on:
         description: Environment to deploy
         options:
         - dev
-        - test
-        - prod
         default: dev
 
 env:

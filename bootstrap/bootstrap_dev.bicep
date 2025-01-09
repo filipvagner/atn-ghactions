@@ -26,6 +26,10 @@ var varStAccounts = [
         name: 'aicoeapimdev001'
         publicAccess: 'None'
       }
+      {
+        name: 'infradev001'
+        publicAccess: 'None'
+      }
     ]
   }
   {

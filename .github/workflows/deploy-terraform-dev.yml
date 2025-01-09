@@ -1,4 +1,4 @@
-name: Terraform Deployment Development
+name: Development - Terraform Deployment
 run-name: Build number ${{ github.run_id }} by @${{ github.actor }}
 
 on:
@@ -9,8 +9,7 @@ on:
         description: Environment to deploy
         options:
         - dev
-        - test
-        - prod
+        default: dev
       infrapath:
         description: 'Path to the infrastructure code'
         type: string
