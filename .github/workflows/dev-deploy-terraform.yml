@@ -16,10 +16,10 @@ on:
         default: 'none'
 
 env:
-  BUILD_NUMBER: ${{ github.run_id }}
-  # Variable for RG backend
-  # Variable for Storage Account backend
-  # Variable for Container backend
+  RUN_ID: ${{ github.run_id }}
+  RG_BACKEND: 'rg-rbcz-tfstateaicoe-dev-weu-001'
+  ST_BACKEND: 'statninfradev001'
+  CONTAINER_BACKEND: 'infradev001'
 
 jobs:
   workflow-info:
@@ -33,8 +33,8 @@ jobs:
     - name: Environment Selection
       run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
     
-    - name: Build Number
-      run: echo "Build number ${{ github.run_id }}"
+    - name: Run ID
+      run: echo "Run ID ${{ env.RUN_ID }}"
 
     - name: Check Path
       run: |
@@ -74,9 +74,9 @@ jobs:
         export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
         terraform init \
         -upgrade \
-        -backend-config="resource_group_name=rg-rbcz-tfstateaicoe-dev-weu-001" \
-        -backend-config="storage_account_name=statninfradev001" \
-        -backend-config="container_name=infradev001" \
+        -backend-config="resource_group_name=${{ env.RG_BACKEND }}" \
+        -backend-config="storage_account_name=${{ env.ST_BACKEND }}" \
+        -backend-config="container_name=${{ env.CONTAINER_BACKEND }}" \
         -backend-config="key=${{ github.event.inputs.infrapath }}/terraform.tfstate"
     
     - name: Terraform Validate
@@ -100,7 +100,7 @@ jobs:
     - name: Save Terraform Plan
       uses: actions/upload-artifact@v4
       with:
-        name: tfplan-${{ github.run_id }}
+        name: tfplan-${{ env.RUN_ID }}
         path: |
           infrastructure/dev/${{ github.event.inputs.infrapath }}/tfplan
 
@@ -129,15 +129,15 @@ jobs:
         export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
         terraform init \
         -upgrade \
-        -backend-config="resource_group_name=rg-rbcz-tfstateaicoe-dev-weu-001" \
-        -backend-config="storage_account_name=statninfradev001" \
-        -backend-config="container_name=infradev001" \
+        -backend-config="resource_group_name=${{ env.RG_BACKEND }}" \
+        -backend-config="storage_account_name=${{ env.ST_BACKEND }}" \
+        -backend-config="container_name=${{ env.CONTAINER_BACKEND }}" \
         -backend-config="key=${{ github.event.inputs.infrapath }}/terraform.tfstate"
 
     - name: Download Terraform Plan
       uses: actions/download-artifact@v4
       with:
-        name: tfplan-${{ github.run_id }}
+        name: tfplan-${{ env.RUN_ID }}
         path: |
           infrastructure/dev/${{ github.event.inputs.infrapath }}
     
