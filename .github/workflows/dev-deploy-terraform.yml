@@ -1,4 +1,4 @@
-name: Development - Terraform Deployment
+name: Development - Deploy Terraform
 run-name: Build number ${{ github.run_id }} by @${{ github.actor }}
 
 on:
