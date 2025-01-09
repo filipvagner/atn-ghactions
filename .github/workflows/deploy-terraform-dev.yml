@@ -71,10 +71,10 @@ jobs:
         export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
         terraform init \
         -upgrade \
-        -backend-config="resource_group_name=rg-learntfstate-001" \
-        -backend-config="storage_account_name=stlearntfstate001" \
-        -backend-config="container_name=gh-atn-dev" \
-        -backend-config="key=terraform.tfstate"
+        -backend-config="resource_group_name=rg-rbcz-tfstateaicoe-dev-weu-001" \
+        -backend-config="storage_account_name=statninfradev001" \
+        -backend-config="container_name=infradev001" \
+        -backend-config="key=${{ github.event.inputs.infrapath }}/terraform.tfstate"
 
     - name: Terraform Plan
       run: |
