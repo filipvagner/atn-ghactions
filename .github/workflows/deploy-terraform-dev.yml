@@ -13,18 +13,42 @@ on:
       infrapath:
         description: 'Path to the infrastructure code'
         type: string
-        default: 'none' 
+        default: 'none'
+
+env:
+  BUILD_NUMBER: ${{ github.run_id }}
 
 jobs:
-  job1:
-    name: 'Job 1'
+  workflow-info:
+    name: 'Workflow Information'
     runs-on: ubuntu-latest
-    if: github.event.inputs.infrapath != 'none'
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Environment Selection
       run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
+    
+    - name: Build Number
+      run: echo "Build number ${{ github.run_id }}"
 
+    - name: Run my script
+      run: |
+        if [ -d "/infrastructure/dev/${{ github.event.inputs.infrapath }}" ]; then
+          echo "Directory exists"
+        else
+          echo "Directory does not exist"
+          exit 1
+        fi
+    
+  path-check:
+    name: 'Workflow Information'
+    runs-on: ubuntu-latest
+    needs: [workflow-info]
+    if: github.event.inputs.infrapath != 'none'
+    
+    steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
@@ -47,7 +71,7 @@ jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
-    needs: [job1]
+    needs: [workflow-info, path-check]
     environment: dev
 
     steps:
