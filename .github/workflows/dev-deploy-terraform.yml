@@ -93,11 +93,11 @@ jobs:
         export ARM_CLIENT_SECRET=${{ secrets.ARM_CLIENT_SECRET_DEV }}
         export ARM_TENANT_ID=${{ secrets.ARM_TENANT_ID }}
         export ARM_SUBSCRIPTION_ID=${{ secrets.ARM_SUBSCRIPTION_ID_DEV }}
-        terraform plan -out=${{ github.run_id }}-tfplan
+        terraform plan -out=tfplan-${{ github.run_id }}
 
     - name: Save Terraform Plan
       uses: actions/upload-artifact@v4
       with:
         name: tfplan
         path: |
-          infrastructure/dev/${{ github.event.inputs.infrapath }}/${{ github.run_id }}-tfplan
+          infrastructure/dev/${{ github.event.inputs.infrapath }}/tfplan-${{ github.run_id }}
