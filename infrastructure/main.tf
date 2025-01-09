@@ -14,18 +14,18 @@ locals {
   azp_url    = "https://dev.azure.com/${var.azp_org_name}"
 }
 
-module "containerregistry" {
-  source  = "Azure/avm-res-containerregistry-registry/azurerm"
-  version = "0.3.1"
+# module "containerregistry" {
+#   source  = "Azure/avm-res-containerregistry-registry/azurerm"
+#   version = "0.3.1"
 
-  name                = var.container_registry_name
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
-  sku                 = "Basic"
-  admin_enabled      = true
-  zone_redundancy_enabled = false # need to override this default setting because zone redundancy isn't supported on Basic SKU.
-  enable_telemetry        = false
-}
+#   name                = var.container_registry_name
+#   location            = azurerm_resource_group.this.location
+#   resource_group_name = azurerm_resource_group.this.name
+#   sku                 = "Basic"
+#   admin_enabled      = true
+#   zone_redundancy_enabled = false # need to override this default setting because zone redundancy isn't supported on Basic SKU.
+#   enable_telemetry        = false
+# }
 
 # resource "azurerm_container_group" "this" {
 #   name                = local.agent_name
