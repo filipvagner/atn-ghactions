@@ -20,7 +20,7 @@ env:
 
 jobs:
   workflow-info:
-    name: 'Workflow Information'
+    name: 'Workflow Information and Check'
     runs-on: ubuntu-latest
 
     steps:
@@ -33,7 +33,7 @@ jobs:
     - name: Build Number
       run: echo "Build number ${{ github.run_id }}"
 
-    - name: Run my script
+    - name: Check Path
       run: |
         if [ -d "./infrastructure/dev/${{ github.event.inputs.infrapath }}" ]; then
           echo "Path /infrastructure/dev/${{ github.event.inputs.infrapath }} exist"
@@ -44,36 +44,11 @@ jobs:
           exit 1
         fi
     
-  path-check:
-    name: 'Workflow Information'
-    runs-on: ubuntu-latest
-    needs: [workflow-info]
-    if: github.event.inputs.infrapath != 'none'
-    
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    - uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Azure Subscription
-      uses: azure/cli@v2
-      with:
-        azcliversion: latest
-        inlineScript: |
-          az account show
-
-    - name: List folders in current directory
-      run: |
-        pwd
-        ls
-
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
-    needs: [workflow-info, path-check]
+    needs: [workflow-info]
+    if: github.event.inputs.infrapath != 'none'
     environment: dev
 
     steps:
