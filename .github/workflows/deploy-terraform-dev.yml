@@ -11,6 +11,10 @@ on:
         - dev
         - test
         - prod
+      infrapath:
+        description: 'Path to the infrastructure code'
+        type: string
+        default: 'none' 
 
 jobs:
   job1:
@@ -21,8 +25,14 @@ jobs:
     - name: Environment Selection
       run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
     
-    - name: Environment Selection
-      run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
+    - name: Path Selection Check
+      run: echo "Path selected ${{ github.event.inputs.infrapath }}"
+          if [ "${{ github.event.inputs.infrapath }}"" == "none" ]; then
+            echo "Wrong path selected. Valid is infrastructure/dev/name_of_folder"
+          fi
+          else
+            echo "Path selected is correct"
+          fi
 
     - name: Checkout repository
       uses: actions/checkout@v4
