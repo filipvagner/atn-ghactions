@@ -20,19 +20,11 @@ jobs:
   job1:
     name: 'Job 1'
     runs-on: ubuntu-latest
+    if: github.event.inputs.infrapath != 'none'
 
     steps:
     - name: Environment Selection
       run: echo "User @${{ github.actor }} deploying to ${{ github.event.inputs.environment }}"
-    
-    - name: Path Selection Check
-      run: echo "Path selected ${{ github.event.inputs.infrapath }}"
-          if [ "${{ github.event.inputs.infrapath }}"" == "none" ]; then
-            echo "Wrong path selected. Valid is infrastructure/dev/name_of_folder"
-          fi
-          else
-            echo "Path selected is correct"
-          fi
 
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -56,6 +48,8 @@ jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
+    needs: [job1]
+    environment: dev
 
     steps:
     - name: Checkout repository
