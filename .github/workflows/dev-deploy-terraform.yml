@@ -139,7 +139,7 @@ jobs:
       with:
         name: tfplan-${{ github.run_id }}
         path: |
-          infrastructure/dev/${{ github.event.inputs.infrapath }}/tfplan
+          infrastructure/dev/${{ github.event.inputs.infrapath }}
     
     - name: Terraform Apply
       run: |
